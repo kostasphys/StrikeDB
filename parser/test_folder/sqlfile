@@ -1,0 +1,8 @@
+
+CREATE TABLE files {
+	int  count,
+	char name,bread snake,
+	date ttime,  
+	task int
+};
+                                                                      

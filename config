@@ -1,0 +1,21 @@
+#! usr/bin/bash
+
+
+main_path=$(cd "$(dirname "${BASH_SOURCE[0]}")" ;  pwd -P )
+main_path=${main_path}"/"
+
+export HOME_DIR=${main_path}
+
+INC="-I"${main_path}
+
+libs_path=${main_path}"libs/Build/"
+
+#echo  ${main_path}
+
+#flags="-fcompare-debug-second "
+export flags="-no-pie"
+
+export GCC="/usr/bin/gcc-12 "${INC}
+
+
+export libs_path=${libs_path}
