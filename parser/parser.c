@@ -282,11 +282,11 @@ static void check_token(struct token *tk, struct token *prev, int mask)
 	unsigned long *bmap;
 
 	debug_mesg("Start check_token");
-	printf("BEfore BMAP %s \n", prev->qnode->name);
+	//printf("BEfore BMAP %s \n", prev->qnode->name);
 
 	bmap = prev->qnode->bitmap_arr[mask].bitmap;
 
-	printf("Bitmap : %lu \n", bmap[0]);
+	//printf("Bitmap : %lu \n", bmap[0]);
 	
 
 	if( test_bit_abs(bmap, (unsigned int)tk->qnode->shift_op) == 0)
@@ -295,7 +295,7 @@ static void check_token(struct token *tk, struct token *prev, int mask)
 		exit(-1); 
 	}
 
-	debug_mesg("After the test");
+	debug_mesg("END check token");
 
 }
 
@@ -357,7 +357,7 @@ void *thread_example(void *ptr)
 int main(){
 	
 	
-	debug_mesg("---ATOM---------HELLO--SASAS-------");
+	debug_mesg("---------START MAIN---------");
 
 	pthread_t pid1;
 	int countt;
@@ -371,9 +371,6 @@ int main(){
     }
 
 	pthread_join(pid1, NULL);
-
-	//countt = atomic_read(&lockito);
-	printf(" LOCKITO : %d \n", countt);
 
 	INIT_HEAD((struct list_head*)&token_head.token_list);
 	
