@@ -1,6 +1,6 @@
 OBJS=control_thread.o
 
-LIB_OBJS= message_queue.o
+LIB_OBJS=  tcp.o
 
 libs_path_t := $(foreach var, $(LIB_OBJS), $(libs_path)/$(var))
 

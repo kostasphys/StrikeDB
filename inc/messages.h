@@ -42,4 +42,21 @@ struct mqueue_msg{
   unsigned long seq;
 };
 
+
+struct header_line
+{
+  size_t size;
+} __attribute__((packed));
+
+struct line_msg
+{
+  char buffer[128];
+}__attribute__((packed));
+
+struct line_packet
+{
+  struct header_line head;
+  struct line_msg  buffer;
+}__attribute__((packed));
+
 #endif
