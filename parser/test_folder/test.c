@@ -8,11 +8,13 @@
 #include <mqueue.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <pthread.h>
+#include <inc/exec/exec_threads.h>
 
 
+/*
 
-
-
+/*
 
 // All legal nodes are stored in this array. Each node determines which transition
 // is legal and which is not. 
@@ -168,5 +170,44 @@ int main(){
 		printf("\n");
 
 	}
+
+} 
 */
+static pthread_mutex_t syncWriteMutex = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t  syncWriteCond  = PTHREAD_COND_INITIALIZER;
+
+
+void *threadfn(void *arg)
+{
+	printf("Thread started \n");
+//	sleep(5);
+	pthread_cond_signal(&syncWriteCond);
+	printf("Signal broadcasted \n\n");
+
 }
+
+
+int main()
+{	
+	pthread_t tid;
+	 void **val;
+	if ( pthread_create(&tid, NULL, threadfn, NULL) < 0 )
+	{
+		printf("Fak \n");
+		exit(-1);
+	}
+
+	printf("We sleep for 10 secs \n");
+	sleep(5);
+
+	pthread_cond_wait(&syncWriteCond, &syncWriteMutex);
+
+	printf("Condition broke \n");
+	sleep(2);
+	pthread_join(tid, NULL);
+	printf("Fakakakaka \n");
+	return 0;
+}
+
+
+

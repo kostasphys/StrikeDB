@@ -23,7 +23,7 @@ void startComms()
     
     if(ret <= -1)
     {
-        printf("Abort listener \n");
+        printf("Abort listener... \n");
         exit(-1);
     }
 
@@ -37,5 +37,6 @@ void listener_init()
 
     startComms();
 
+    //init_thread_connection();
     
 }

@@ -32,6 +32,10 @@
         "errno.h": "c",
         "main.h": "c",
         "unistd.h": "c",
-        "listener.h": "c"
+        "listener.h": "c",
+        "sigaction.h": "c",
+        "inet.h": "c",
+        "listener_threads.h": "c",
+        "atomic_ops.h": "c"
     }
 }

@@ -1,7 +1,8 @@
-OBJS= listen_init.o listen_main.o \
-		listen_thread.o
+OBJS= 	listen_init.o listen_main.o  listen_connection.o \
+	  	listener_utils.o listen_polling.o \
 
-LIB_OBJS= tcp.o message_queue.o
+
+LIB_OBJS= tcp.o message_queue.o atomic_ops.o
 
 libs_path_t := $(foreach var, $(LIB_OBJS), $(libs_path)$(var))
 
@@ -12,3 +13,6 @@ all: ${OBJS}
 
 %.o: %.c 
 	${GCC} -c  $< -o $@
+
+clean:
+	rm *.o

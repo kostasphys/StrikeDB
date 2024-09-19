@@ -8,6 +8,8 @@
 #include <inc/messages.h>
 #include <errno.h>
 
+#define CHECK_READ  1;
+
 int InitListen(int port)
 {
     int ret, opt;
@@ -82,6 +84,7 @@ int acceptConnect()
 }
 
 
+
 int writeMsg(int fd, struct line_msg *buffer)
 {
    struct line_packet packet;
@@ -101,7 +104,7 @@ int writeMsg(int fd, struct line_msg *buffer)
          return -1;
       }
 
-      perror("");
+      //perror("");
       printf("%d bytes where sent \n\n", (int)count);
 
       rem = rem - count;
@@ -115,6 +118,99 @@ int writeMsg(int fd, struct line_msg *buffer)
 
 }
 
+/*It is assumed that the socket is Non Blocking*/
+int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes)
+{
+
+   void *head_ptr = &packet->head;
+   void *msg_ptr = &packet->buffer;
+   ssize_t ret, count;
+   size_t msg_size, head_len, body_len, remain;
+   int readBytes = *pReadBytes;
+
+   head_len = sizeof(struct header_line);
+   body_len = sizeof(struct line_msg );
+
+   ret = 0;
+
+  // memset(head_ptr, '\0', head_len);
+  // memset(msg_ptr, '\0',  sizeof(struct line_msg));
+   printf("Start recv message \n");
+
+   if(readBytes >= head_len)
+      goto Body;
+
+   head_ptr += readBytes;
+   remain = head_len - readBytes;
+
+   do
+   {
+     printf("READING HEADER --- \n\n");
+     ret =  read(fd, head_ptr, remain);
+     if( ret <= 0)
+     {
+         if ( ret <= 0  && errno == 11)
+         {
+               /*The data is probably not ready yet so we will try again later*/
+            printf("****RETRY AGAIN TCP**** \n\n");
+            *pReadBytes = readBytes;
+            return EAGAIN;
+         }
+         else
+         {
+            *pReadBytes = readBytes;
+            printf("Error during reading socket header: %d  \n\n", (int)ret);  
+            return -errno;
+
+         }
+     }
+     
+     readBytes += ret;
+     head_ptr += ret;
+     remain -= ret;
+   }
+   while( readBytes < head_len );
+   
+
+   msg_size = packet->head.size;
+   printf("TCP: message size is %d \n", (int)msg_size);
+
+Body:
+   remain = msg_size + head_len - readBytes;
+   msg_ptr += readBytes - head_len;
+   do
+   {  
+      
+      ret =  read(fd, msg_ptr, remain);
+      printf("TCP: reading body %d \n", (int)ret );
+      if(ret <= 0)
+      {
+         if ( ret <= 0  && errno == 11)
+         {
+            /*The data is probably not ready yet so we will try again later*/
+            *pReadBytes = readBytes;
+            return EAGAIN;
+         }
+         else
+         {
+            *pReadBytes = readBytes;
+            printf("Error during reading socket body: %d  \n\n", (int)ret);  
+            return -errno;         
+         }
+      }
+      printf("Bytes read inside tcp loop : %d \n", (int)ret);
+      readBytes += ret;
+      msg_ptr += ret;
+      remain -= ret;
+
+   } while ( readBytes < msg_size + head_len);
+   
+   *pReadBytes =readBytes;
+   printf("End  recv  message \n\n");
+
+   return 0;
+
+}
 
 int readMsg(int fd, struct line_msg *buffer)
 {
@@ -142,7 +238,7 @@ int readMsg(int fd, struct line_msg *buffer)
    
    if (ret <= 0 )
    {
-      printf("Error during reading socket header: %d  \n\n", (int)ret);
+      printf("Error during reading socket header: %d  \n\n", (int)ret);     
       return -1;
 
    }
@@ -161,7 +257,7 @@ int readMsg(int fd, struct line_msg *buffer)
 
    if (ret <= 0 )
    {
-      printf("Error during reading socket body: %d  \n\n", (int)ret);
+      printf("Error during reading Message body: %d  \n\n", (int)ret);
       perror("");
       return -1;
 
@@ -172,3 +268,15 @@ int readMsg(int fd, struct line_msg *buffer)
    return 0;
 
 }
+
+/*
+int readPollClientSockets()
+{
+   
+   FD_ZERO(&readfds);
+   sfd = 0;
+
+   ret = select(sfd, &readfds, NULL, NULL,NULL);
+}
+
+*/

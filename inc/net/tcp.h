@@ -9,5 +9,6 @@ int InitListen(int port);
 int acceptConnect();
 int writeMsg(int fd, struct line_msg *buffer);
 int readMsg(int fd, struct line_msg *buffer);
+int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes);
 
 #endif
