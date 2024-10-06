@@ -36,6 +36,15 @@
         "sigaction.h": "c",
         "inet.h": "c",
         "listener_threads.h": "c",
-        "atomic_ops.h": "c"
+        "atomic_ops.h": "c",
+        "type_defs.h": "c",
+        "syscall.h": "c",
+        "tcp.h": "c",
+        "debug.h": "c",
+        "types.h": "c",
+        "poll.h": "c",
+        "select.h": "c",
+        "listener_utils.h": "c",
+        "socket.h": "c"
     }
 }

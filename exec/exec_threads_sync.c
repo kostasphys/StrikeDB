@@ -32,7 +32,7 @@ int TExecInfoWork()
    queueItem++;
    pthread_cond_signal(&syncReadCond);
    pthread_mutex_unlock(&syncReadMutex);
-    return 1;
+   return 1;
 }
 
 int TExecWaitMsg()
@@ -42,7 +42,7 @@ int TExecWaitMsg()
         pthread_cond_wait(&syncReadCond, &syncReadMutex);
    queueItem--;
    pthread_mutex_unlock(&syncReadMutex);
-    return 1;
+   return 1;
 }
 
 int TExecPutMsg(void *ptr)
@@ -65,7 +65,7 @@ int TExecGetMsg(void *ptr)
 
    itemGet = (itemGet +1) % (max_request);
    pthread_mutex_unlock(&syncQueueMutex);
-    return 1;
+   return 1;
 }
 
 int TExecFreeEntry()
@@ -74,6 +74,6 @@ int TExecFreeEntry()
    queueSlots++;
    pthread_cond_signal(&syncWriteCond);
    pthread_mutex_unlock(&syncWriteMutex);
-    return 1;
+   return 1;
 }
 

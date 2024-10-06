@@ -8,7 +8,8 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <errno.h>
-
+#include <inc/types/type_defs.h>
+#include <inc/listener/listener.h>
 
 
 struct whatever{
@@ -17,7 +18,7 @@ struct whatever{
 };
 
 int main() {
-
+/*
     struct whatever buffer, obj;
     mqd_t mqd;
 
@@ -58,6 +59,38 @@ int main() {
         printf("buff : %s \n", buffer.bff);
         //sleep(1);
     }
+    */
+   struct connectThreadsInfo *header, *ptr, *dummy;
+
+    header = malloc(sizeof(struct connectThreadsInfo));
+    header->fd = 0;
+    GEN_INIT_HEAD(header);
     
+
+    for(int i=0; i < 9; ++i){
+        struct connectThreadsInfo *ptr = malloc(sizeof(struct connectThreadsInfo));
+        ptr->fd = i + 10;
+        generic_add_list(header, ptr);
+        
+    }
+
+    
+
+    generic_del_item((header->next->next->next));
+    generic_del_item((header->next->next->next));
+    generic_del_item((header->next->next->next));
+    generic_del_item((header->next->next->next));
+    generic_del_item((header->prev));
+
+    ptr = header->next;
+    for(;;)
+    {
+        if(ptr == header)
+        {
+            break;
+        }
+        printf("Lulis %d\n", ptr->fd);
+        ptr = ptr->next;
+    }
 
 }

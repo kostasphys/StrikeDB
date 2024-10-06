@@ -1,5 +1,5 @@
 OBJS= strings.o  list.o \
-	  bitops.o  prints.o \
+	  bitops.o  debug.o \
 	  atomic_ops.o
 
 

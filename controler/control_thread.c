@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
 #include <unistd.h>
@@ -10,6 +11,9 @@
 #include <inc/IPC/mqueues.h>
 #include <inc/listener/listener.h>
 #include <inc/net/tcp.h>
+#include <inc/debug.h>
+#include <inc/atomic_ops.h>
+#include <math.h>
 
 int listenerFd;
 
@@ -49,17 +53,30 @@ int main(){
     struct mqueue_msg msgBuffer;
     struct line_msg buffer;
 
-    strcpy(buffer.buffer, "Kostas here is calling you");
+    int kilo = 1;
+    
+    char strz[500];
+
+
     
     install_handler(SIGSYS, fn_handle);
     install_handler(SIGTERM, fn_handle);
     install_handler(SIGABRT, fn_handle);
+    
   //  install_handler(SIGKILL, fn_handle);
     
 
     fd = socket(AF_INET, SOCK_STREAM, 0);
 
-   
+    ret = open_trace(0);
+    if( ret == -1)
+    {
+      printf("NOT good \n");
+      exit(-1);
+    }
+
+    trace_file("TRACE FILE WORKS\n");
+    
     
 
     if(fd == -1 )
@@ -111,12 +128,38 @@ int main(){
 
   printf("Client connected \n");
 
+
+ // sleep(500);
+  int cc = 0;
   while(1)
   {
+    sprintf(strz, "Kostas here is calling you %d, pid:%d", cc, getpid() );
+    strcpy(buffer.buffer, strz);
+    
+    
     writeMsg(fd, &buffer);
     printf("Sleep a little bit \n");
     
-    usleep(500000);
+    usleep(5*pow(10,5));
+  //sleep(1);
+    
+    /*
+    if(cc == 1000)
+    {
+      printf("we sleep now ten SECS\n");
+      sleep(10);
+    }
+      */
+
+    ++cc;
+    if(cc == 500)
+    {
+      shutdown(fd ,SHUT_RDWR);
+      close(fd);
+
+      return 0;
+    }
+    //sleep(1);
   }
   
 

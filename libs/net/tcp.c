@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <inc/net/tcp.h>
 #include <inc/messages.h>
+#include <inc/debug.h>
 #include <errno.h>
 
 #define CHECK_READ  1;
@@ -18,7 +19,7 @@ int InitListen(int port)
 
     if ( (listenerFd = socket(AF_INET, SOCK_STREAM, 0)) == -1 )
    {
-      printf(" Error while creating listening socket \n "); 
+      fprintf(stderr ," Error while creating listening socket \n "); 
       return -1;
    }
 
@@ -30,7 +31,7 @@ int InitListen(int port)
 
    if( setsockopt(listenerFd, SOL_SOCKET, SO_REUSEADDR, &opt,sizeof(opt)) != 0)
    {
-      printf("Problem when setting the sock opts \n;");
+      fprintf(stderr, "Problem when setting the sock opts \n;");
       close(listenerFd);
       return -1;
    }
@@ -38,7 +39,7 @@ int InitListen(int port)
 
    if ( bind(listenerFd, (struct sockaddr *)&localSock, sizeof(struct sockaddr_in)) == -1 )
    {
-      printf("Error while binding Listen socket \n");
+      fprintf(stderr, "Error while binding Listen socket \n");
       close(listenerFd);
       return -1;
    }
@@ -46,11 +47,11 @@ int InitListen(int port)
    ret = listen(listenerFd, 10);
    if( ret <= -1)
    {
-      printf("Error while listening \n");
+      fprintf(stderr, "Error while listening \n");
       return ret;
    }
 
-   printf("Listen socket is up \n\n");
+   fprintf(stderr ,"Listen socket is up \n\n");
 
    return 0;
 
@@ -61,10 +62,12 @@ int acceptConnect()
 {
    struct sockaddr_in address_client;
    char address_client_dot[16];
+   char msgLine[256];
    int clientFd;
    int addr_len = sizeof(struct sockaddr);
 
-   printf("Start accepting connections \n");
+   sprintf(msgLine, "Start accepting connections");
+   trace_file(msgLine);
 
    clientFd = accept(listenerFd, 
                      (struct sockaddr *)&address_client,
@@ -72,13 +75,14 @@ int acceptConnect()
 
    if( clientFd < 0 )
    {
-      printf("Error during accepting call \n");
+      fprintf(stderr ,"Error during accepting call \n");
       return -1;
    }
 
    inet_ntop( AF_INET, &address_client.sin_addr.s_addr, address_client_dot, INET_ADDRSTRLEN );
 
-   printf("Conntection accepted at adress %s \n\n", address_client_dot);
+   sprintf(msgLine, "Conntection accepted at adress %s \n\n", address_client_dot);
+   trace_file(msgLine);
    
    return clientFd;
 }
@@ -127,6 +131,7 @@ int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes)
    ssize_t ret, count;
    size_t msg_size, head_len, body_len, remain;
    int readBytes = *pReadBytes;
+   char msgLine[256];
 
    head_len = sizeof(struct header_line);
    body_len = sizeof(struct line_msg );
@@ -135,7 +140,8 @@ int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes)
 
   // memset(head_ptr, '\0', head_len);
   // memset(msg_ptr, '\0',  sizeof(struct line_msg));
-   printf("Start recv message \n");
+   sprintf(msgLine, "Start recv message \n");
+   trace_file(msgLine);
 
    if(readBytes >= head_len)
       goto Body;
@@ -145,22 +151,31 @@ int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes)
 
    do
    {
-     printf("READING HEADER --- \n\n");
+      
+     sprintf(msgLine, "Reading TCP Header \n");
+     trace_file(msgLine);
+     
      ret =  read(fd, head_ptr, remain);
+     //ret =  recv(fd, head_ptr, remain, 0);
      if( ret <= 0)
      {
-         if ( ret <= 0  && errno == 11)
+         if ( ret < 0  && errno == EAGAIN || errno == EINTR)
          {
                /*The data is probably not ready yet so we will try again later*/
-            printf("****RETRY AGAIN TCP**** \n\n");
+            sprintf(msgLine, "****RETRY AGAIN TCP****, fd:%d, ret:%d \n", fd, ret);
+            trace_file(msgLine);
+
             *pReadBytes = readBytes;
-            return EAGAIN;
+            return -EAGAIN;
          }
          else
          {
+            /*Normal close or Abrupt close. Either way we have to take a better look at this*/
             *pReadBytes = readBytes;
-            printf("Error during reading socket header: %d  \n\n", (int)ret);  
-            return -errno;
+            sprintf(msgLine, "Error during reading socket header. ret: %d, errno :%d  \n\n", (int)ret, errno);
+            trace_file(msgLine);
+
+            return 0;
 
          }
      }
@@ -173,7 +188,10 @@ int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes)
    
 
    msg_size = packet->head.size;
-   printf("TCP: message size is %d \n", (int)msg_size);
+   sprintf(msgLine, "TCP: message size is %d \n", (int)msg_size);
+   trace_file(msgLine);
+
+   
 
 Body:
    remain = msg_size + head_len - readBytes;
@@ -182,33 +200,44 @@ Body:
    {  
       
       ret =  read(fd, msg_ptr, remain);
-      printf("TCP: reading body %d \n", (int)ret );
+    //  ret =  recv(fd, msg_ptr, remain, 0);
+      
+      sprintf(msgLine, "TCP: reading body %d \n", (int)ret);
+      trace_file(msgLine);
+      
       if(ret <= 0)
       {
-         if ( ret <= 0  && errno == 11)
+         if ( ret < 0  && (errno == EAGAIN || errno == EINTR))
          {
             /*The data is probably not ready yet so we will try again later*/
             *pReadBytes = readBytes;
-            return EAGAIN;
+            return -errno;
          }
          else
          {
             *pReadBytes = readBytes;
-            printf("Error during reading socket body: %d  \n\n", (int)ret);  
-            return -errno;         
+            sprintf(msgLine, "Error during reading socket body: %d  \n\n", (int)ret);
+            trace_file(msgLine);
+            return  0;         
          }
       }
-      printf("Bytes read inside tcp loop : %d \n", (int)ret);
+      
+      sprintf(msgLine, "Bytes read inside tcp loop : %d \n", (int)ret);
+      trace_file(msgLine);
+   
       readBytes += ret;
-      msg_ptr += ret;
       remain -= ret;
+      msg_ptr += ret;
+      
 
    } while ( readBytes < msg_size + head_len);
    
    *pReadBytes =readBytes;
-   printf("End  recv  message \n\n");
 
-   return 0;
+   sprintf(msgLine, "End recv message \n\n");
+   trace_file(msgLine);
+
+   return 1;
 
 }
 
@@ -219,6 +248,7 @@ int readMsg(int fd, struct line_msg *buffer)
    void *msg_ptr = buffer;
    ssize_t ret, count, ovl;
    size_t msg_size, head_len;
+   char msgLine[256];
 
    head_len = sizeof(struct header_line);
    ret = 0; ovl = 0;
@@ -226,7 +256,8 @@ int readMsg(int fd, struct line_msg *buffer)
    memset(head_ptr, '\0', head_len);
    memset(msg_ptr, '\0',  sizeof(struct line_msg));
 
-   printf("Start recv message \n");
+   sprintf(msgLine, "Start recv message \n");
+   trace_file(msgLine);
 
    do
    {
@@ -244,8 +275,10 @@ int readMsg(int fd, struct line_msg *buffer)
    }
 
    msg_size = header.size;
-   printf("Header arrived with message %d \n", (int)msg_size);
-
+ 
+   sprintf(msgLine, "Header arrived with message %d \n", (int)msg_size);
+   trace_file(msgLine);
+  
    ovl = 0;
    do
    {
@@ -263,7 +296,8 @@ int readMsg(int fd, struct line_msg *buffer)
 
    }
 
-   printf("End  recv  message \n\n");
+   sprintf(msgLine, "End  recv  message \n\n");
+   trace_file(msgLine);
 
    return 0;
 

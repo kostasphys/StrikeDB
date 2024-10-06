@@ -1,28 +1,46 @@
 #include <stdio.h>
-#include <inc/messages.h>
-#include <inc/listener/listener.h>
-#include <inc/net/tcp.h>
-#include <inc/IPC/mqueues.h>
-#include <inc/listener/listener_threads.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
+#include <errno.h>
+#include <inc/messages.h>
+#include <inc/listener/listener.h>
+#include <inc/net/tcp.h>
+#include <inc/IPC/mqueues.h>
+#include <inc/debug.h>
+#include <inc/atomic_ops.h>
+
+#define __USE_POSIX
+#include <signal.h>
 
 int  listenerFd, newFd;
 struct line_msg msg_buffer;
 struct  skMqueue_Struct  sys_mqueues;
 pthread_t   tid;
 
+pthread_mutex_t listenPollMutex = PTHREAD_MUTEX_INITIALIZER;
 
 struct connectThreads_t   connectThreads[connectionThreadsMax];
-struct listenHash   socketHash[SocketArrayMax];
-
+struct listenHash   socketHash[SocketArrayMax], liveConnections, *err;
+struct listenHash  *connectHead,  *connectTail;
+struct listenHash  *hashNode;
 
 int main()
 {
-    listener_init();
-/*
+    struct listenHash   *err;
+    char line[255];
+    err = NULL;
+    int ret;
+
+
+    ThdMaskSignals();
+    
+    listenerStart();
+
+    sprintf(line, "Listener is listening on Fd: %d \n", listenerFd);
+    trace_file(line);
+    
     int i;
     for(i=0; i < pollingThreads; i++)
     {
@@ -32,43 +50,64 @@ int main()
             exit(-1);
         }
     }
-*/    
     
 
-    
-   // while(1)
-  //  {
+    while(1)
+    {   
+
+       sprintf(line, "Listening for new connections... \n");
+       trace_file(line);
+
+       /*We wait for connections here*/
        newFd = acceptConnect();
        if(newFd == -1)
-       {
-            printf("Error while accepting a new connection \n");
+       {    
+            sprintf(line, "Error while accepting a new connection \n");
+            trace_file(line);
        }
-   // }
-    printf("Pockie Listener accepted the call \n\n");
 
-    int x;
-    x=fcntl(newFd ,F_GETFL, 0);
-    fcntl(newFd, F_SETFL, x | O_NONBLOCK);
+        int sockFlags;
+        sockFlags = fcntl(newFd ,F_GETFL, 0);
+        fcntl(newFd, F_SETFL, sockFlags | O_NONBLOCK);
 
-    struct line_packet packet;
-    int readBytes = 0;
-     
-    while(1)
-    {
-        printf("**************************** \n");
-        int pp =  readMsgFast(newFd, &packet, &readBytes);
-        printf("Error message :%d, ReadBytes: %d \n\n\n\\n", pp, readBytes);
-        //readMsg(newFd, &msg_buffer);
+        
+        sprintf(line, "New connection accepted: %d \n", newFd);
+        trace_file(line);
 
-        if (pp != 11)
-            readBytes = 0;
-    
-        printf("client Message: %s \n", packet.buffer.buffer);
-        printf("****************************\n\n\n\n\n");
-        memset(&packet,'\0', sizeof(packet));
 
-        sleep(4);
 
+        hashNode = search_hash_node(newFd, &err);
+        
+        if(hashNode == NULL)
+        {
+            hashNode = insert_hash_node(hashNode, newFd);
+            if(hashNode == NULL)
+            {
+                printf("Error when calling: insert_hash_node \n");
+                close(newFd);
+            }
+        }
+        
+        
+        pthread_mutex_lock(&livePollMutex);
+
+        atomic_inc_db(&hashNode->isAlive);
+        add_item_hashLive(connectHead, hashNode);
+        atomic_inc_db(&liveConnects);
+
+        pthread_mutex_unlock(&livePollMutex);
+        
+        
+        ret =  pthread_kill(tid, SIGUSR2);
+        if(ret != 0 )
+        {
+            perror("Err: ");
+            fprintf(stderr, "Error while sending SIGUSR2 signal to polling threads. We abort . %d\n", errno);
+            exit(-1);
+        }
+        
+/*
+*/
     }
-     
+      
 }

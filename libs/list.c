@@ -13,14 +13,14 @@ int add_list(struct list_head *head, struct list_head *list)
 }
 
 
-void add_tail(struct list_head *head, struct list_head *list){
+void add_tail(struct list_head *head, struct list_head *node){
 	
 	struct list_head *prev = head->prev;
 
-	prev->next = list;
-	list->prev = prev;
-	list->next = head;
-	head->prev = list;
+	prev->next = node;
+	node->prev = prev;
+	node->next = head;
+	head->prev = node;
 }
 
 
@@ -30,5 +30,4 @@ void del_list(struct list_head *list)
 	list->prev->next = list->next;
 	list->next->prev = list->prev;
 }
-
 

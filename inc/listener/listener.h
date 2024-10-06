@@ -28,8 +28,10 @@ struct connectThreadsInfo
 struct connectThreads_t
 {
   //struct connectThreadsInfo SocketArr[SocketArrayMax];
-  struct connectThreadsInfo *pendingRequests;
-  struct connectThreadsInfo *tempRequests;
+  struct connectThreadsInfo  *pendingRequests;
+  struct connectThreadsInfo  *tempRequests;
+  struct connectThreadsInfo  *poolConns;
+  struct connectThreadsInfo  *internalPool;
   pthread_mutex_t infoThreadMutex ; 
   pthread_cond_t  infoThreadCond ;
   int  requestFlag;
@@ -40,18 +42,40 @@ struct listenHash
     /*Value -1 means that the first entry is empty */
     int   fd;
     struct listenHash    *next;
+
+    /*This is the list which indicates all the  connections that the listener has accepted*/
+    struct listenHash    *liveNext, *livePrev;
+
+    /*   
+         1:Alive, 
+         0:Closed
+    */
+    int isAlive;
+
     /*This field indicates  the temporary owner of a connection in case of pending conenctions*/
     pthread_t  tid;
+
     /*Specifies the index in the thread array which this node belongs to. -1 means its free for use*/
-    unsigned int  threadArrIndex;
+    int  threadArrIndex;
+
     /*0:Normal, 1:Blocked*/
-    int  status;
+    int  status;    
+    
+    /*0:Can Poll, 1: Cannot Pall*/
+    int readPoll;
 };
 
+
+#include <inc/listener/listener_utils.h>
+
+
 extern struct listenHash   socketHash[SocketArrayMax];
+extern struct listenHash   *connectHead, *connectTail;
+extern struct listenHash   liveConnections;
 extern struct connectThreads_t   connectThreads[connectionThreadsMax];
 
-void listener_init();
+
+void listenerStart();
 int init_thread_connection();
 
 #endif

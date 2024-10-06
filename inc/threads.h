@@ -28,6 +28,6 @@ typedef struct {
 extern  skThread_Struct_t sys_threads;
 
 
-
+void  ThdMaskSignals();
 
 #endif
