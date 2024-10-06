@@ -3,25 +3,24 @@
 #include <sys/select.h>
 #include <unistd.h>
 #include <sys/socket.h>
-
+#include <math.h>
 #define  __USE_POSIX
 #define  __USE_XOPEN_EXTENDED
 #include <signal.h>
 #include <errno.h>
-#include <libexplain/select.h>
 #include <inc/listener/listener.h>
 #include <inc/net/tcp.h>
 #include <inc/debug.h>
 #include <inc/atomic_ops.h>
 #include <inc/listener/listener_utils.h>
-#include <math.h>
+
 
 
 
 #define max_val(x,y) (((x) >= (y)) ? (x) : (y))
 #define min_val(x,y) (((x) >= (y)) ? (y) : (x))
 
-extern int newFd;
+
 int maxFd = 0;
 int indexFd, threadIndex, tempThreadIndex;
 char line[255];
@@ -72,10 +71,9 @@ void checkLiveConn()
 
 void *pollingThreadFn(void *arg)
 {
-    fd_set readfds;
+    fd_set  readfds;
     sigset_t   set;
-    int ret;
-    int rBytes = 0;
+    int  ret;
     
     
     struct timeval timerSelect;
@@ -266,7 +264,6 @@ void *pollingThreadFn(void *arg)
 
         }
 
-        //sleep(1);
      
     }
 }

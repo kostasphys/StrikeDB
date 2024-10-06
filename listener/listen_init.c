@@ -98,6 +98,7 @@ void listenerStart()
     int Return;
 
     create_mqueues();
+
     open_mqueues();
 
     
@@ -112,10 +113,12 @@ void listenerStart()
         exit(-1);
     }
 
+    /*Start the listener*/
     startComms();
 
     init_hash_sock();
     
+    /*Initialize the connection threads which handles all the network load*/
     init_thread_connection();
     
 }

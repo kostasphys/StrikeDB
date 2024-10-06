@@ -68,22 +68,20 @@ int main(){
 
     fd = socket(AF_INET, SOCK_STREAM, 0);
 
-    ret = open_trace(0);
-    if( ret == -1)
-    {
-      printf("NOT good \n");
-      exit(-1);
-    }
-
-    trace_file("TRACE FILE WORKS\n");
-    
-    
-
     if(fd == -1 )
     {
         printf("Error while creating socket \n");
         return -1;
     }
+
+    ret = open_trace(0);
+    if( ret == -1)
+    {
+      printf("Error while opening trace file \n");
+      exit(-1);
+    }
+
+  
 
 
     bzero((char *)&sAddrClient, sizeof(sAddrClient));
@@ -133,7 +131,7 @@ int main(){
   int cc = 0;
   while(1)
   {
-    sprintf(strz, "Kostas here is calling you %d, pid:%d", cc, getpid() );
+    sprintf(strz, "Client here is calling you %d, pid:%d", cc, getpid() );
     strcpy(buffer.buffer, strz);
     
     
