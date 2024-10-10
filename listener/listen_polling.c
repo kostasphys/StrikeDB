@@ -42,6 +42,8 @@ void checkLiveConn()
 
     sprintf(line, "Before locking\n");
     trace_file(line);
+
+
     pthread_mutex_lock(&livePollMutex);
 
     connectCounter += liveConnects;
@@ -51,15 +53,21 @@ void checkLiveConn()
     pthread_mutex_unlock(&livePollMutex);
 
     
-    hashPtr = connectHead->liveNext;
+    hashPtr = connectHead;
 
     do
     {   
+        hashPtr = hashPtr->liveNext;
+
         sprintf(line, "Alive sockets %d\n", hashPtr->fd);
         trace_file(line);
+
         maxFd = max_val(maxFd, hashPtr->fd);
-        hashPtr = hashPtr->liveNext;
-    } while (hashPtr != TailPtr);
+
+        
+
+    } 
+    while (hashPtr != TailPtr);
     
 
     sprintf(line, "End of connect\n");

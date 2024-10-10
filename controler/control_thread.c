@@ -87,8 +87,8 @@ int main(){
     bzero((char *)&sAddrClient, sizeof(sAddrClient));
     sAddrClient.sin_family = AF_INET;
     sAddrClient.sin_port   = htons(7000);
-    //sAddrClient.sin_addr.s_addr = inet_addr("161.35.165.25");
-    sAddrClient.sin_addr.s_addr = inet_addr("192.168.1.58");
+    sAddrClient.sin_addr.s_addr = inet_addr("161.35.165.25");
+   // sAddrClient.sin_addr.s_addr = inet_addr("192.168.1.58");
 /*
     Rx =  open_mqueue("/exec_Rx", O_WRONLY);
 
@@ -138,7 +138,7 @@ int main(){
     writeMsg(fd, &buffer);
     printf("Sleep a little bit \n");
     
-    usleep(5*pow(10,5));
+    usleep(6*pow(10,5));
   //sleep(1);
     
     /*
@@ -150,14 +150,14 @@ int main(){
       */
 
     ++cc;
-    if(cc == 500)
+    if((cc)%(15) == 0)
     {
-      shutdown(fd ,SHUT_RDWR);
-      close(fd);
-
-      return 0;
+      sleep(10);  
+      
     }
-    //sleep(1);
+
+    
+    
   }
   
 
