@@ -17,9 +17,10 @@
 int  listenerFd, newFd;
 struct line_msg msg_buffer;
 struct  skMqueue_Struct  sys_mqueues;
-pthread_t   tid;
+pthread_t   tid, authId;
 
-pthread_mutex_t listenPollMutex = PTHREAD_MUTEX_INITIALIZER;
+//pthread_mutex_t listenPollMutex = PTHREAD_MUTEX_INITIALIZER;
+
 
 struct connectThreads_t   connectThreads[connectionThreadsMax];
 struct listenHash   socketHash[SocketArrayMax], liveConnections, *err;
@@ -51,8 +52,14 @@ int main()
         }
     }
     
+   /*  if ( pthread_create(&authId, NULL, authThreadFn, NULL) < 0 )
+    {
+        printf("Error Initializing Authorization Thread \n");
+        exit(-1);
+    }
+ */
 
-    while(1)
+    for(;;)
     {   
 
        sprintf(line, "Listening for new connections... \n");
@@ -70,22 +77,32 @@ int main()
         sockFlags = fcntl(newFd ,F_GETFL, 0);
         fcntl(newFd, F_SETFL, sockFlags | O_NONBLOCK);
 
+       
+        /*Authorize the connection*/
+        ret = authorizeConn(newFd);
+        if(ret < 0 )
+        {
+            close(newFd);
+            break;
+        }
+            
         
         sprintf(line, "New connection accepted: %d \n", newFd);
         trace_file(line);
 
 
-
-        hashNode = search_hash_node(newFd, &err);
+        hashNode = search_hash_node(newFd);
         
         if(hashNode == NULL)
         {
-            hashNode = insert_hash_node(hashNode, newFd);
-            if(hashNode == NULL)
-            {
+            //hashNode = insert_hash_node(hashNode, newFd);
+            //if(hashNode == NULL)
+            //{
+            /*We should print in the error log later on*/
                 printf("Error when calling: insert_hash_node \n");
                 close(newFd);
-            }
+                break;
+            //}
         }
         
         

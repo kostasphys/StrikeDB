@@ -1,4 +1,13 @@
 
+void smp_mb()
+{
+	int v,i;
+	__asm__ __volatile__(
+		"lock ; " "addl %1,%0"
+		:"=m" (v)
+		:"ir" (i), "m" (v): "memory");
+}
+
 void atomic_add_db(int i, int *v)
 {
 	__asm__ __volatile__(

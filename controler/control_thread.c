@@ -14,6 +14,7 @@
 #include <inc/debug.h>
 #include <inc/atomic_ops.h>
 #include <math.h>
+#include <errno.h>
 
 int listenerFd;
 
@@ -49,6 +50,7 @@ mqd_t  Rx;
 int main(){
     char var;
     int fd, ret;
+    struct line_packet packet;
     struct sockaddr_in sAddrClient;
     struct mqueue_msg msgBuffer;
     struct line_msg buffer;
@@ -126,18 +128,55 @@ int main(){
 
   printf("Client connected \n");
 
+  memset(&packet, '\0', sizeof(packet));
 
- // sleep(500);
+  char tempBuff[255];
   int cc = 0;
-  while(1)
+  for(;;)
   {
     sprintf(strz, "Client here is calling you %d, pid:%d", cc, getpid() );
+    trace_file(strz);
+
     strcpy(buffer.buffer, strz);
+
+    sprintf(tempBuff, "Client here is calling you %d, pid:%d", cc, getpid() );
+    packet.head.size = strlen(tempBuff);
+    memcpy(packet.buffer.buffer, tempBuff, packet.head.size);
+
+
+
+  //  writeMsg(fd, &buffer);
+retry:
+    ret = writeMsgFast(fd, &packet);
+    if(ret == 0)
+    {
+      sprintf(strz, "Connection failed, we close the client \n" );
+      strcpy(buffer.buffer, strz);
+      close(fd);
+      return -1;
+    }
+    else if( ret == -EAGAIN || ret == -EINTR)
+    {
+      sprintf(strz, "Write is blocked... We try again \n" );
+      trace_file(strz);
+      //strcpy(buffer.buffer, strz);
+      perror("");
+      goto retry;
+    }
+    else if(ret < 0)
+    {
+      sprintf(strz, "General error \n" );
+      trace_file(strz);
+     // strcpy(buffer.buffer, strz);
+      perror("");
+      close(fd);
+      return -1;
+    }
+
+    printf("Message sent: %d", cc);
+
     
-    
-    writeMsg(fd, &buffer);
     printf("Sleep a little bit \n");
-    
     usleep(6*pow(10,5));
   //sleep(1);
     
@@ -156,7 +195,7 @@ int main(){
       
     }
 
-    
+    memset(&packet, '\0', sizeof(packet));
     
   }
   

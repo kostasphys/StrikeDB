@@ -45,7 +45,8 @@ struct mqueue_msg{
 
 struct header_line
 {
-  size_t size;
+  size_t  size;
+  int  type;
 } __attribute__((packed));
 
 struct line_msg
@@ -57,6 +58,7 @@ struct line_packet
 {
   struct header_line head;
   struct line_msg  buffer;
+  int   rwBytes;
 }__attribute__((packed));
 
 #endif

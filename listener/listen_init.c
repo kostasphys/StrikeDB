@@ -113,6 +113,9 @@ void listenerStart()
         exit(-1);
     }
 
+    /*Initialize authThread structs*/
+    authThreadInit();
+
     /*Start the listener*/
     startComms();
 

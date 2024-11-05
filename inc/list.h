@@ -4,6 +4,13 @@
 #include <inc/types/type_defs.h>
 #include <stdio.h>
 
+
+struct list_head {	
+	struct list_head  *prev, *next;
+};
+
+
+
 #define GEN_INIT_HEAD(header)({ \
 	header->next = header; 	\
 	header->prev = header;	\
@@ -32,14 +39,10 @@
 
 
 
-struct list_head {	
-	struct list_head  *prev, *next;
-};
-
-
 
 extern void INIT_HEAD(struct list_head *head);
 int add_list(struct list_head *head, struct list_head *list);
 void add_tail(struct list_head *head, struct list_head *list);
+int list_empty(struct list_head  *list);
 
 #endif

@@ -88,7 +88,7 @@ int acceptConnect()
 }
 
 
-
+ 
 int writeMsg(int fd, struct line_msg *buffer)
 {
    struct line_packet packet;
@@ -121,6 +121,78 @@ int writeMsg(int fd, struct line_msg *buffer)
    return 0;
 
 }
+ 
+
+
+int writeMsgFast(int fd, struct line_packet *packet)
+{
+   char msgLine[255];
+   ssize_t rem, count;
+   void *writePtr = (void*)packet;
+   rem =  sizeof(struct header_line) + packet->head.size;
+   //rem =  sizeof(struct header_line);
+
+   if(packet->rwBytes > 0)
+   {
+      writePtr += packet->rwBytes;
+      rem = sizeof(struct header_line) + packet->head.size - packet->rwBytes;
+   }
+   
+
+   if(packet->head.size > sizeof(struct line_msg))
+   {
+      sprintf(msgLine, "Size inside head is bigger than the body \n");
+      trace_file(msgLine);
+      return -1;
+   }
+
+   //memcpy(packet->buffer.buffer, buffer, packet.head.size );
+   
+   for(;;)
+   {
+      count = write(fd, writePtr, rem);
+
+      if(count == 0 )
+      {
+         sprintf(msgLine, "Sockets closed normally or abruptly \n");
+         trace_file(msgLine);
+         return 0;
+      } 
+      else if(count < 0 )
+      {  
+         if( errno == EAGAIN || errno == EINTR)
+         {
+            sprintf(msgLine, "Socket is blocked now \n");
+            trace_file(msgLine);  
+            return -EAGAIN;
+         }
+         else
+            return -1;
+         
+      }
+
+      
+      rem -= count;
+      if( rem == 0 )
+         break;
+         
+      //rem = rem - count;
+      writePtr += count;
+      packet->rwBytes += count;
+
+     
+   }
+   
+   sprintf(msgLine, "Its fdfdfdfd here\n");
+   trace_file(msgLine);  
+
+
+   memset(&packet->rwBytes, '\0', sizeof(packet->rwBytes));
+
+   return 1;
+
+}
+
 
 /*It is assumed that the socket is Non Blocking*/
 int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes)
@@ -240,6 +312,7 @@ Body:
    return 1;
 
 }
+
 
 int readMsg(int fd, struct line_msg *buffer)
 {

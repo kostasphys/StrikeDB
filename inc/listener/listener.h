@@ -3,9 +3,12 @@
 
 #include <inc/list.h>
 #include <inc/threads.h>
-#include <inc/listener/listener_threads.h>
+#include <inc/debug.h>
 #include <sys/types.h>
+#include <inc/listener/listener_threads.h>
+#include <inc/atomic_ops.h>
 #include <inc/messages.h>
+#include <inc/net/tcp.h>
 
 #define listenerPort 7000
 
@@ -41,7 +44,9 @@ struct listenHash
 {
     /*Value -1 means that the first entry is empty */
     int   fd;
-    struct listenHash    *next;
+
+    /*This is important because we want consistent stores.*/
+    struct listenHash    *next __attribute__ ((aligned(32)));
 
     /*This is the list which indicates all the  connections that the listener has accepted*/
     struct listenHash    *liveNext, *livePrev;
@@ -73,7 +78,6 @@ extern struct listenHash   socketHash[SocketArrayMax];
 extern struct listenHash   *connectHead, *connectTail;
 extern struct listenHash   liveConnections;
 extern struct connectThreads_t   connectThreads[connectionThreadsMax];
-
 
 void listenerStart();
 int init_thread_connection();

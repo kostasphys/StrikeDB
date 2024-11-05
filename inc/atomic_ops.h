@@ -2,6 +2,7 @@
 #define    __s_atomic_ops_h__
 
 /*************************************/
+void smp_mb();
 void atomic_add_db(int i, int *v);
 void atomic_inc_db(int *v);
 void atomic_dec_db(int *v);

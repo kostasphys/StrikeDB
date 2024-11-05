@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <math.h>
+#include <string.h>
 #define  __USE_POSIX
 #define  __USE_XOPEN_EXTENDED
 #include <signal.h>
@@ -96,8 +97,8 @@ void *pollingThreadFn(void *arg)
 
     while(1)
     {   
-        struct line_packet   msg;
-        struct listenHash   *hashPtr, *hashPrev, *hashSearch, *err;
+     //   struct line_packet   msg;
+        struct listenHash   *hashPtr, *hashPrev, *hashSearch;
         struct connectThreadsInfo   *cnnPtr;
         char debugPtr[1024];
         
@@ -199,7 +200,7 @@ void *pollingThreadFn(void *arg)
 
 
             /*Find the hash node that corresponds to the indexFd file descriptors. If there isn't one we create it*/
-            hashSearch = search_hash_node(indexFd, &err);
+            hashSearch = search_hash_node(indexFd);
             if( hashSearch == NULL)
             {
                 sprintf(line, "Error when searching for hash node in Polling thread\n");
@@ -248,7 +249,7 @@ void *pollingThreadFn(void *arg)
             else    
                 delete_list_conn(cnnPtr);
 
-
+            memset(cnnPtr, '\0', sizeof(struct connectThreadsInfo));
             cnnPtr->fd = indexFd;
             cnnPtr->hashNode = hashSearch;
             cnnPtr->hashNode->threadArrIndex = threadIndex;

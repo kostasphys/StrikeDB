@@ -12,8 +12,14 @@ buildall:
 # Build libs first
 	${MAKE}  -C   $(srctree)/libs
 
+	${MAKE}  -C   $(srctree)/libs/net
+	${MAKE}  -C   $(srctree)/libs/IPC
+
+#listener
+	${MAKE}  -C   $(srctree)/listener
+
 # parser
-	${MAKE}  -C   $(srctree)/parser
+#	${MAKE}  -C   $(srctree)/parser
 
 
 clean:

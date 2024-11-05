@@ -38,6 +38,7 @@ void init_hash_sock()
 
 }
 
+
 struct listenHash *insert_hash_node(struct listenHash *socket, int fd)
 {
     if( socket-> fd == -1)
@@ -64,17 +65,17 @@ struct listenHash *insert_hash_node(struct listenHash *socket, int fd)
 
     ptr->fd = fd;
     ptr->next = NULL;
+    smp_mb();
     socket->next = ptr;
     return ptr;
 }
 
 
-struct listenHash *search_hash_node(int fd, struct listenHash  **err)
+struct listenHash *search_hash_node(int fd)
 {
     unsigned int   hash;
     struct listenHash   *ptr; 
 
-    *err = NULL;
 
     hash = entry_hash_function(fd);
     ptr = &socketHash[hash];
@@ -84,13 +85,11 @@ struct listenHash *search_hash_node(int fd, struct listenHash  **err)
         if( ptr->fd == fd )
             return ptr;
         
+        /*Here we are sure that the ptr->next will be in a consistent state.*/
         if(ptr->next != NULL)
             ptr = ptr->next;
         else
-        {
-            *err = ptr;
-            return  (struct listenHash *)NULL;
-        }
+            return  insert_hash_node(ptr, fd);   
     }
 }
 
