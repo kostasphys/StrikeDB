@@ -1,5 +1,5 @@
-OBJS= 	listen_init.o listen_main.o  listen_connection.o \
-	  	listener_utils.o listen_polling.o  listen_auth.o \
+OBJS= 	listener_init.o listener_main.o  listener_connection.o \
+	  	listener_utils.o listener_polling.o  listener_auth.o \
 
 
 LIB_OBJS= tcp.o message_queue.o atomic_ops.o debug.o list.o
@@ -15,4 +15,5 @@ all: ${OBJS}
 	${GCC} -c  $< -o $@
 
 clean:
-	rm *.o && (cd Build && rm *.o)
+	rm  *.o   || true
+	cd Build && rm *.o || true

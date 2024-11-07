@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 #include <errno.h>
 #include <sys/socket.h>
 #include <inc/atomic_ops.h>
@@ -30,8 +31,8 @@ void handle_connection(struct connectThreadsInfo  *msg, int arrIndex)
     readRetry  = 0;
 
     do
-   {
-        ret = readMsgFast(msg->fd, &msg->pakcet, (int *)&msg->readBytes);
+    {
+        ret = readMsgFast(msg->fd, &msg->packet, (int *)&msg->rwBytes, 0);
         --readRetry;
     }
     while(readRetry > 0 && ret == -EAGAIN );
@@ -58,7 +59,7 @@ void handle_connection(struct connectThreadsInfo  *msg, int arrIndex)
             add_item_conn(connectThreads[arrIndex].internalPool, msg );
         
             /*Send message to the processing threads*/
-            sprintf(line, "SUCCESS: later we will change it: %s \n", msg->pakcet.buffer.buffer);
+            sprintf(line, "SUCCESS: later we will change it: %s \n", msg->packet.buffer.buffer);
             trace_file(line);
 
             break;
@@ -179,6 +180,7 @@ void init_temp_mempools(struct connectThreadsInfo  *head)
             exit(0);
         }
 
+        memset(ptr, '\0', sizeof(struct connectThreadsInfo));
         generic_add_list(head, ptr);
     }
 

@@ -79,11 +79,11 @@ int main()
 
        
         /*Authorize the connection*/
-        ret = authorizeConn(newFd);
+        ret = authorizeConn(newFd, 50);
         if(ret < 0 )
         {
             close(newFd);
-            break;
+            continue;
         }
             
         

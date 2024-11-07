@@ -16,7 +16,7 @@
 void *pollingThreadFn(void *arg);
 void *authThreadFn(void* arg);
 void authThreadInit();
-int  authorizeConn(int fd);
+int  authorizeConn(int fd, int retry);
 /***************************************/
 
 extern pthread_mutex_t livePollMutex;

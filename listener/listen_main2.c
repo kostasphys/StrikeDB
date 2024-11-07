@@ -56,7 +56,7 @@ int main()
     while(1)
     {
         printf("**************************** \n");
-        int pp =  readMsgFast(newFd, &packet, &readBytes);
+        int pp =  readMsgFast(newFd, &packet, &readBytes, 0);
         printf("Error message :%d, ReadBytes: %d \n\n\n\\n", pp, readBytes);
         //readMsg(newFd, &msg_buffer);
 

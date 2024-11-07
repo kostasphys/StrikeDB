@@ -11,6 +11,7 @@
 #include <inc/net/tcp.h>
 
 #define listenerPort 7000
+#define AUTH_MAGIC_NUMBER "FFEEDD00"
 
 struct connectThreadsInfo
 {   
@@ -20,8 +21,8 @@ struct connectThreadsInfo
     struct connectThreadsInfo   *prev, *next;
     /* If we cant read the whole message in one  trial then we store the already bytes here */
     int       isBlocked;
-    struct line_packet    pakcet;
-    ssize_t     readBytes;
+    struct line_packet    packet;
+    ssize_t     rwBytes;
     size_t      msgSize;
     /*This is for the listener thread. We need an efficient way to communicate the status of the socket*/
     struct listenHash   *hashNode;    

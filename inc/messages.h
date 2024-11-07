@@ -58,7 +58,6 @@ struct line_packet
 {
   struct header_line head;
   struct line_msg  buffer;
-  int   rwBytes;
 }__attribute__((packed));
 
 #endif

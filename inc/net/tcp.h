@@ -8,8 +8,9 @@ extern int listenerFd;
 int InitListen(int port);
 int acceptConnect();
 int writeMsg(int fd, struct line_msg *buffer);
-int writeMsgFast(int fd, struct line_packet *packet);
+int writeMsgFast(int fd, struct line_packet *packet, int *writeBytes);
 int readMsg(int fd, struct line_msg *buffer);
-int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes);
+int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes, int skipHead);
+int ReadMsgHead(int fd, struct line_packet *packet, int *readBytes);
 
 #endif

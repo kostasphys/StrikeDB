@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <string.h>
@@ -10,6 +11,8 @@
 #include <errno.h>
 
 #define CHECK_READ  1;
+
+#define max_val(x,y) (((x) >= (y)) ? (x) : (y))
 
 int InitListen(int port)
 {
@@ -124,7 +127,7 @@ int writeMsg(int fd, struct line_msg *buffer)
  
 
 
-int writeMsgFast(int fd, struct line_packet *packet)
+int writeMsgFast(int fd, struct line_packet *packet, int *writeBytes)
 {
    char msgLine[255];
    ssize_t rem, count;
@@ -132,10 +135,10 @@ int writeMsgFast(int fd, struct line_packet *packet)
    rem =  sizeof(struct header_line) + packet->head.size;
    //rem =  sizeof(struct header_line);
 
-   if(packet->rwBytes > 0)
+   if(*writeBytes > 0)
    {
-      writePtr += packet->rwBytes;
-      rem = sizeof(struct header_line) + packet->head.size - packet->rwBytes;
+      writePtr += *writeBytes;
+      rem = sizeof(struct header_line) + packet->head.size - *writeBytes;
    }
    
 
@@ -178,7 +181,7 @@ int writeMsgFast(int fd, struct line_packet *packet)
          
       //rem = rem - count;
       writePtr += count;
-      packet->rwBytes += count;
+      *writeBytes += count;
 
      
    }
@@ -187,15 +190,85 @@ int writeMsgFast(int fd, struct line_packet *packet)
    trace_file(msgLine);  
 
 
-   memset(&packet->rwBytes, '\0', sizeof(packet->rwBytes));
+   memset(writeBytes, '\0', sizeof(*writeBytes));
 
    return 1;
 
 }
 
 
+int ReadMsgHead(int fd, struct line_packet *packet, int *readBytes)
+{
+      void *head_ptr = &packet->head;
+   ssize_t ret, count;
+   size_t  head_len, remain;
+   //int readBytes = packet->rwBytes;
+   char msgLine[256];
+
+   head_len = sizeof(struct header_line);
+
+   
+   #if ENABLE_DEBUG == 1
+      sprintf(msgLine, "Start recv message ReadMsgHead \n");
+      trace_file(msgLine);
+   #endif
+   
+
+   if(*readBytes > 0)
+   {
+      head_ptr += *readBytes;
+      remain = head_len - *readBytes; 
+   }
+   
+
+   do
+   {
+           
+     ret =  read(fd, head_ptr, remain);
+     //ret =  recv(fd, head_ptr, remain, 0);
+     if( ret <= 0)
+     {
+         if ( ret < 0  && (errno == EAGAIN || errno == EINTR))
+         {
+               /*The data is probably not ready yet so we will try again later*/
+            sprintf(msgLine, "****RETRY AGAIN HEADER TCP****, fd:%d, ret:%d \n", fd, ret);
+            trace_file(msgLine);
+
+            return -EAGAIN;
+         }
+         else
+         {
+            /*Normal close or Abrupt close. Either way we have to take a better look at this*/
+            perror("");
+            sprintf(msgLine, "Error during reading socket header. ret: %d, errno :%d  \n\n", (int)ret, errno);
+            trace_file(msgLine);
+
+            return 0;
+
+         }
+     }
+     
+     *readBytes += ret;
+   
+     head_ptr += ret;
+     remain -= ret;
+
+   }
+   while( *readBytes < head_len );
+   
+
+   #if ENABLE_DEBUG == 1
+      sprintf(msgLine, "TCP ReadMsgHead: message size is %d \n", (int)packet->head.size);
+      trace_file(msgLine);
+   #endif
+
+
+   return 1;
+}
+
+
 /*It is assumed that the socket is Non Blocking*/
-int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes)
+int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes, int skipHead)
 {
 
    void *head_ptr = &packet->head;
@@ -212,8 +285,21 @@ int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes)
 
   // memset(head_ptr, '\0', head_len);
   // memset(msg_ptr, '\0',  sizeof(struct line_msg));
-   sprintf(msgLine, "Start recv message \n");
+   sprintf(msgLine, "Start recv readMsgFast \n");
    trace_file(msgLine);
+
+   if( skipHead && max_val(readBytes - head_len, 0) >= packet->head.size)
+   {
+      sprintf(msgLine, "THE SIZES ARE EQ %d, %d\n", readBytes - head_len,  packet->head.size);
+      trace_file(msgLine);
+      return 1;
+   }
+   else
+   {
+      sprintf(msgLine, "Size is %d\n", readBytes - head_len);
+      trace_file(msgLine);
+   }
+      
 
    if(readBytes >= head_len)
       goto Body;
@@ -259,13 +345,15 @@ int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes)
    while( readBytes < head_len );
    
 
+Body:
    msg_size = packet->head.size;
-   sprintf(msgLine, "TCP: message size is %d \n", (int)msg_size);
-   trace_file(msgLine);
+
+   #if ENABLE_DEBUG == 1
+      sprintf(msgLine, "TCP: message size is %d \n", (int)msg_size);
+      trace_file(msgLine);
+   #endif
 
    
-
-Body:
    remain = msg_size + head_len - readBytes;
    msg_ptr += readBytes - head_len;
    do
@@ -288,14 +376,17 @@ Body:
          else
          {
             *pReadBytes = readBytes;
+            perror("");
             sprintf(msgLine, "Error during reading socket body: %d  \n\n", (int)ret);
             trace_file(msgLine);
             return  0;         
          }
       }
       
-      sprintf(msgLine, "Bytes read inside tcp loop : %d \n", (int)ret);
-      trace_file(msgLine);
+      #if ENABLE_DEBUG == 1
+         sprintf(msgLine, "Bytes read inside tcp loop : %d \n", (int)ret);
+         trace_file(msgLine);
+      #endif
    
       readBytes += ret;
       remain -= ret;

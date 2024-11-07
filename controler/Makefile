@@ -11,3 +11,7 @@ all: ${OBJS}
 
 %.o: %.c 
 	${GCC} -c  $< -o $@
+
+clean:
+	rm bcontrol
+	rm  *.o

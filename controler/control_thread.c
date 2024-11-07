@@ -50,13 +50,13 @@ mqd_t  Rx;
 int main(){
     char var;
     int fd, ret;
-    struct line_packet packet;
+    struct connectThreadsInfo packet;
     struct sockaddr_in sAddrClient;
     struct mqueue_msg msgBuffer;
     struct line_msg buffer;
 
-    int kilo = 1;
-    
+  
+  
     char strz[500];
 
 
@@ -89,65 +89,53 @@ int main(){
     bzero((char *)&sAddrClient, sizeof(sAddrClient));
     sAddrClient.sin_family = AF_INET;
     sAddrClient.sin_port   = htons(7000);
-    sAddrClient.sin_addr.s_addr = inet_addr("161.35.165.25");
-   // sAddrClient.sin_addr.s_addr = inet_addr("192.168.1.58");
-/*
-    Rx =  open_mqueue("/exec_Rx", O_WRONLY);
+  //  sAddrClient.sin_addr.s_addr = inet_addr("161.35.165.25");
+    sAddrClient.sin_addr.s_addr = inet_addr("192.168.1.58");
 
-    if(Rx < 0 )
+
+
+    ret = connect(fd, (struct sockaddr*)&sAddrClient, sizeof(struct sockaddr));
+
+    if(ret == -1)
     {
-        perror("");
-        printf("Error Opening \n ");
-        return -1 ;
+      printf("Cant connect \n");
+      return -1;
     }
 
-    strcpy(msgBuffer.buff, "fakofit");
+    printf("Client connected \n");
 
-    while(1)
-    {   
-        printf("Enter command \n");
+    memset(&packet, '\0', sizeof(packet));
 
-        scanf("%c", &var);
-        getchar();
+    char tempBuff[255];
+    int cc = 0;
 
-        printf("Good \n");
-        
-        msgBuffer.buff[0] = var;
+    
+    packet.packet.head.type = 1;
+    strcpy(packet.packet.buffer.buffer, AUTH_MAGIC_NUMBER);
+    packet.packet.head.size = strlen(packet.packet.buffer.buffer);
 
-        write_mqueue(Rx, &msgBuffer);
-
+    ret = writeMsgFast(fd, &packet.packet, &packet.rwBytes);
+    if(ret <= 0 )
+    {
+      printf("ERROR when Writing for auth \n");
+      return 0;
     }
-   */
-  ret = connect(fd, (struct sockaddr*)&sAddrClient, sizeof(struct sockaddr));
 
-  if(ret == -1)
-  {
-    printf("Cant connect \n");
-    return -1;
-  }
 
-  printf("Client connected \n");
-
-  memset(&packet, '\0', sizeof(packet));
-
-  char tempBuff[255];
-  int cc = 0;
   for(;;)
   {
-    sprintf(strz, "Client here is calling you %d, pid:%d", cc, getpid() );
-    trace_file(strz);
 
     strcpy(buffer.buffer, strz);
 
-    sprintf(tempBuff, "Client here is calling you %d, pid:%d", cc, getpid() );
-    packet.head.size = strlen(tempBuff);
-    memcpy(packet.buffer.buffer, tempBuff, packet.head.size);
+    sprintf(tempBuff, "Tilter here is calling you %d, pid:%d", cc, getpid() );
+    packet.packet.head.size = strlen(tempBuff);
+    memcpy(packet.packet.buffer.buffer, tempBuff, packet.packet.head.size);
 
 
 
-  //  writeMsg(fd, &buffer);
+  
 retry:
-    ret = writeMsgFast(fd, &packet);
+    ret = writeMsgFast(fd, &packet.packet, &packet.rwBytes);
     if(ret == 0)
     {
       sprintf(strz, "Connection failed, we close the client \n" );
@@ -159,7 +147,6 @@ retry:
     {
       sprintf(strz, "Write is blocked... We try again \n" );
       trace_file(strz);
-      //strcpy(buffer.buffer, strz);
       perror("");
       goto retry;
     }
@@ -167,27 +154,18 @@ retry:
     {
       sprintf(strz, "General error \n" );
       trace_file(strz);
-     // strcpy(buffer.buffer, strz);
       perror("");
       close(fd);
       return -1;
     }
 
-    printf("Message sent: %d", cc);
+    printf("Message sent: %d \n", cc);
 
     
     printf("Sleep a little bit \n");
     usleep(6*pow(10,5));
-  //sleep(1);
+  
     
-    /*
-    if(cc == 1000)
-    {
-      printf("we sleep now ten SECS\n");
-      sleep(10);
-    }
-      */
-
     ++cc;
     if((cc)%(15) == 0)
     {
