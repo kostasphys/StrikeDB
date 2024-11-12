@@ -92,6 +92,9 @@ int main()
 
 
         hashNode = search_hash_node(newFd);
+
+        sprintf(line, "After Search hash node: %d \n", newFd);
+        trace_file(line);
         
         if(hashNode == NULL)
         {
@@ -105,6 +108,8 @@ int main()
             //}
         }
         
+        sprintf(line, "Before mutex lock: %d \n", newFd);
+        trace_file(line);
         
         pthread_mutex_lock(&livePollMutex);
 
@@ -114,7 +119,10 @@ int main()
 
         pthread_mutex_unlock(&livePollMutex);
         
+        sprintf(line, "After lock: %d \n", newFd);
+        trace_file(line);
         
+
         ret =  pthread_kill(tid, SIGUSR2);
         if(ret != 0 )
         {

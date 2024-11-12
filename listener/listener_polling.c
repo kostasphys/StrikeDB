@@ -117,10 +117,12 @@ checkLive:
             sigsuspend(&set);
 
             sigaddset(&set, SIGUSR2);
+
+            //We have to calibrate everything again
+            goto checkLive;
+        
         }
 
-        //We have to calibrate everything again
-        goto checkLive;
         
 
         FD_ZERO(&readfds);
