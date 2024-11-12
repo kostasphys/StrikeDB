@@ -10,6 +10,8 @@ all: ${OBJS}
 
 %.o: %.c 
 	${GCC} -c  $< -o $@
+	make -C net/
+	make -C IPC/
 	mv *.o Build/
 
 

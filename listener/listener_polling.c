@@ -51,8 +51,6 @@ void checkLiveConn()
     TailPtr = connectHead->livePrev;
     liveConnects = 0;
 
-    pthread_mutex_unlock(&livePollMutex);
-
     
     hashPtr = connectHead;
 
@@ -70,6 +68,8 @@ void checkLiveConn()
     } 
     while (hashPtr != TailPtr);
     
+    pthread_mutex_unlock(&livePollMutex);
+
 
     sprintf(line, "End of connect\n");
     trace_file(line);
@@ -98,11 +98,11 @@ void *pollingThreadFn(void *arg)
     while(1)
     {   
      //   struct line_packet   msg;
-        struct listenHash   *hashPtr, *hashPrev, *hashSearch;
+        struct listenHash   *hashPtr, *hashPrev, *hashSearch, *hashTemp;
         struct connectThreadsInfo   *cnnPtr;
         char debugPtr[1024];
         
-
+checkLive:
         checkLiveConn();
 
 
@@ -118,8 +118,11 @@ void *pollingThreadFn(void *arg)
 
             sigaddset(&set, SIGUSR2);
         }
+
+        //We have to calibrate everything again
+        goto checkLive;
         
-        
+
         FD_ZERO(&readfds);
         hashPtr = connectHead;
 
@@ -157,8 +160,12 @@ void *pollingThreadFn(void *arg)
                     
                     break;
                 }
-                    
-                del_item_hashLive(hashPtr);
+                
+
+                hashTemp = hashPtr;
+                hashPtr = hashPtr->livePrev;
+                del_item_hashLive(hashTemp);
+
                 pthread_mutex_unlock(&livePollMutex);
 
                 continue;

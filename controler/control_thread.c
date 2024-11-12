@@ -47,7 +47,7 @@ void fn_handle(int x)
 
 mqd_t  Rx;
 
-int main(){
+int main(int argc, char **argv){
     char var;
     int fd, ret;
     struct connectThreadsInfo packet;
@@ -55,8 +55,17 @@ int main(){
     struct mqueue_msg msgBuffer;
     struct line_msg buffer;
 
-  
-  
+    char opts = 'x';
+
+    if (argc <= 1  )
+    {
+      printf("Too few vals \n");
+      exit(-1);
+    }
+
+    opts = argv[1][0];
+
+
     char strz[500];
 
 
@@ -89,8 +98,8 @@ int main(){
     bzero((char *)&sAddrClient, sizeof(sAddrClient));
     sAddrClient.sin_family = AF_INET;
     sAddrClient.sin_port   = htons(7000);
-  //  sAddrClient.sin_addr.s_addr = inet_addr("161.35.165.25");
-    sAddrClient.sin_addr.s_addr = inet_addr("192.168.1.58");
+    sAddrClient.sin_addr.s_addr = inet_addr("161.35.165.25");
+    //sAddrClient.sin_addr.s_addr = inet_addr("192.168.1.58");
 
 
 
@@ -109,11 +118,23 @@ int main(){
     char tempBuff[255];
     int cc = 0;
 
-    
-    packet.packet.head.type = 1;
-    strcpy(packet.packet.buffer.buffer, AUTH_MAGIC_NUMBER);
-    packet.packet.head.size = strlen(packet.packet.buffer.buffer);
+    if(opts == 'a')
+    {
+      packet.packet.head.type = 1;
+      strcpy(packet.packet.buffer.buffer, AUTH_MAGIC_NUMBER);
+      packet.packet.head.size = strlen(packet.packet.buffer.buffer);
+    }
+    else if(opts == 'b')
+    {
+      packet.packet.head.type = 1;
+      strcpy(packet.packet.buffer.buffer, "ASKkkmcmhkjljhlkjhljhsnfkdalsfhieqfuqiqkdvlcdnlqoehpuqfhpuvnksdjfvjkalsdhvabjkasldfjh");
+      packet.packet.head.size = strlen(packet.packet.buffer.buffer);  
+    }
+    else
+      packet.packet.head.type = 544;
 
+ /* 
+ */
     ret = writeMsgFast(fd, &packet.packet, &packet.rwBytes);
     if(ret <= 0 )
     {
