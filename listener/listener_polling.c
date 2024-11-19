@@ -47,8 +47,9 @@ void checkLiveConn()
 
     pthread_mutex_lock(&livePollMutex);
 
-    connectCounter += liveConnects;
     TailPtr = connectHead->livePrev;
+
+    connectCounter += liveConnects;
     liveConnects = 0;
 
     
@@ -63,7 +64,6 @@ void checkLiveConn()
 
         maxFd = max_val(maxFd, hashPtr->fd);
 
-        
 
     } 
     while (hashPtr != TailPtr);
@@ -127,9 +127,10 @@ checkLive:
 
         FD_ZERO(&readfds);
         hashPtr = connectHead;
-
+/* 
         if(hashPtr->liveNext == connectHead)
-            goto select;
+            goto select; */
+
 
         while( hashPtr != TailPtr )
         {   
@@ -153,7 +154,7 @@ checkLive:
 
                 --connectCounter;
 
-                if(TailPtr == hashPtr)
+                if( hashPtr == TailPtr )
                 {
                     TailPtr = hashPtr->livePrev;
                     del_item_hashLive(hashPtr);
@@ -170,6 +171,9 @@ checkLive:
 
                 pthread_mutex_unlock(&livePollMutex);
 
+                if(hashPtr == connectHead)
+                    break;
+                    
                 continue;
             }
 
@@ -185,6 +189,7 @@ checkLive:
 
         
         ret = select(maxFd + 1, &readfds, NULL, NULL, &timerSelect);
+
         if ( ret == 0 )
         {
             sprintf(line, "Time-out Occured \n");

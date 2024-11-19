@@ -50,7 +50,7 @@ struct listenHash
     struct listenHash    *next __attribute__ ((aligned(32)));
 
     /*This is the list which indicates all the  connections that the listener has accepted*/
-    struct listenHash    *liveNext, *livePrev;
+    struct listenHash    *liveNext, *livePrev __attribute__ ((aligned(32)));
 
     /*   
          1:Alive, 

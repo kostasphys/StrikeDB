@@ -114,8 +114,14 @@ int main()
         pthread_mutex_lock(&livePollMutex);
 
         atomic_inc_db(&hashNode->isAlive);
+        
+        sprintf(line, "Before HASHI \n");
+        trace_file(line);
         add_item_hashLive(connectHead, hashNode);
         atomic_inc_db(&liveConnects);
+        sprintf(line, "Before HASHI \n");
+        trace_file(line);
+
 
         pthread_mutex_unlock(&livePollMutex);
         

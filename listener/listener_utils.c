@@ -41,19 +41,21 @@ void init_hash_sock()
 
 struct listenHash *insert_hash_node(struct listenHash *socket, int fd)
 {
-    if( socket-> fd == -1)
+    /* if( socket-> fd == -1)
     {
         socket->fd = fd;
         socket->next = NULL;
         return socket;
-    }
+    } */
 
     struct listenHash *ptr = malloc(sizeof(struct listenHash));
+
     if(ptr == NULL)
     {
         printf("Error during allocating memory for socket hash \n");
         return (struct listenHash *)NULL;
     }
+
 
     for(;;)
     {
@@ -135,6 +137,7 @@ void add_item_hashLive(struct listenHash  *header, struct listenHash  *item)
 	prev->liveNext = item;	 
 	item->livePrev = prev;	
 	item->liveNext = header;	
+    
 	header->livePrev = item;	
 }
 
@@ -144,14 +147,17 @@ void del_item_hashLive(struct listenHash  *item)
     struct listenHash  *livePrev = item->livePrev;
     struct listenHash  *liveNext = item->liveNext;
     
-    livePrev->liveNext = item->liveNext;
+  /*   livePrev->liveNext = item->liveNext;
     liveNext->livePrev = item->livePrev;
+ */
+    livePrev->liveNext = liveNext;
+    liveNext->livePrev = livePrev;
 
     item->liveNext = NULL;
     item->livePrev = NULL;
 }
 
-
+/* 
 void add_tail_hashlive(struct listenHash  *head, struct listenHash  *list )
 {
     struct listenHash *start = list->liveNext;
@@ -164,7 +170,7 @@ void add_tail_hashlive(struct listenHash  *head, struct listenHash  *list )
     head->livePrev = end;
     
 }
-
+ */
 
 
 void delete_list_conn(struct connectThreadsInfo *element)
