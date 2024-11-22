@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <inc/threads.h>
 #include <inc/listener/listener.h>
 #include <inc/types/type_defs.h>
@@ -31,6 +32,7 @@ void init_hash_sock()
         socketHash[i].fd = i;
         socketHash[i].next = NULL;
         socketHash[i].liveNext = NULL;
+        socketHash[i].livePrev = NULL;
         socketHash[i].isAlive = 0;
         socketHash[i].status = 0;
         socketHash[i].readPoll = 0;
@@ -215,3 +217,10 @@ void add_live_connection(struct listenHash * ptr)
     return;
 }
 
+
+void suspend_thread(void  *blockSet)
+{
+    sigdelset(&blockSet, SIGUSR2);
+    sigsuspend(&blockSet);
+    sigaddset(&blockSet, SIGUSR2);
+}

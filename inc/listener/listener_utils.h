@@ -1,7 +1,7 @@
 #ifndef   __s_listener_utils_h__
 #define   __s_listener_utils_h__
 
-
+#include <inc/listener/listener.h>
 
 /********************************************************************************************/
 unsigned int entry_hash_function(int fd);
@@ -15,5 +15,6 @@ void del_item_hashLive(struct listenHash  *item);
 void add_item_hashLive(struct listenHash  *header, struct listenHash  *item);
 void debug_list_conn(struct connectThreadsInfo *head, char *str);
 void add_item_conn(struct connectThreadsInfo  *head, struct connectThreadsInfo  *item );
+void suspend_thread(void  *blockSet);
 /********************************************************************************************/
 #endif

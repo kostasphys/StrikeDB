@@ -10,6 +10,9 @@
 #include <inc/messages.h>
 #include <inc/net/tcp.h>
 
+#define  __USE_POSIX
+#define  __USE_XOPEN_EXTENDED
+
 #define listenerPort 7000
 #define AUTH_MAGIC_NUMBER "FFEEDD00"
 

@@ -5,11 +5,8 @@
 #include <sys/socket.h>
 #include <math.h>
 #include <string.h>
-#define  __USE_POSIX
-#define  __USE_XOPEN_EXTENDED
 #include <signal.h>
 #include <errno.h>
-#include <inc/listener/listener.h>
 #include <inc/net/tcp.h>
 #include <inc/debug.h>
 #include <inc/atomic_ops.h>
@@ -53,6 +50,8 @@ void checkLiveConn()
     liveConnects = 0;
 
     
+    pthread_mutex_unlock(&livePollMutex);
+
     hashPtr = connectHead;
 
     do
@@ -68,9 +67,7 @@ void checkLiveConn()
     } 
     while (hashPtr != TailPtr);
     
-    pthread_mutex_unlock(&livePollMutex);
-
-
+    
     sprintf(line, "End of connect\n");
     trace_file(line);
 
@@ -80,44 +77,42 @@ void checkLiveConn()
 
 void *pollingThreadFn(void *arg)
 {
+    int   ret;
     fd_set  readfds;
     sigset_t   set;
-    int  ret;
     
     
+
     struct timeval timerSelect;
+
+    
+    sigfillset(&set);
+    pthread_sigmask(SIG_BLOCK, &set, NULL);
+
+
 
     /*We need TailPtr so we can determine the last element of the Connection Alive array before we sleep.
       During sleeping the listening thread might add some new connections on the queue. Because of this we must
       find the maximum fd so that we don't make pointless itterations  */
     TailPtr = connectHead;
-    
-    sigfillset(&set);
-    pthread_sigmask(SIG_BLOCK, &set, NULL);
 
     while(1)
     {   
      //   struct line_packet   msg;
         struct listenHash   *hashPtr, *hashPrev, *hashSearch, *hashTemp;
         struct connectThreadsInfo   *cnnPtr;
-        char debugPtr[1024];
         
 checkLive:
         checkLiveConn();
 
 
-        while (connectCounter == 0 && atomic_read_db(&liveConnects) == 0 )
+        if(connectCounter == 0 && atomic_read_db(&liveConnects) == 0 )
         {   
         	
-            sigdelset(&set, SIGUSR2);
-	        
             sprintf(line, "There are no live connections... we sleep \n");
             trace_file(line);
-
-            sigsuspend(&set);
-
-            sigaddset(&set, SIGUSR2);
-
+            
+            suspend_thread(&set);
             //We have to calibrate everything again
             goto checkLive;
         

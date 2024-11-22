@@ -1,7 +1,0 @@
-MQ BEFOOOOORE 3 MQ BEFOOOOORE 4 Listen socket is up 
-
-Start accepting connections 
-Conntection accepted at adress 192.168.1.58 
-
-We accepted: 6 
-Error while sending SIGUSR2 signal to polling threads. We abort. 

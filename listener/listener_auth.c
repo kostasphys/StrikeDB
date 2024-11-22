@@ -30,6 +30,7 @@ void authThreadInit()
     
     authWait  = malloc(sizeof(struct authWait_t));
     authConnTemp = malloc(sizeof(struct connectThreadsInfo));
+
     if(authWait == NULL || authConnTemp == NULL)
     {
         fprintf(stderr, "Error when allocating authWait, authConnTemp \n");
@@ -58,6 +59,7 @@ int authorizeConn(int fd, int retry)
  
     memset(authString, '\0', sizeof(authString));
     memset(authConnTemp, '\0', sizeof(struct connectThreadsInfo));
+    
     authConnTemp->fd = fd;
 
 
@@ -89,7 +91,7 @@ int authorizeConn(int fd, int retry)
 
     if( authConnTemp->packet.head.type != 1)
     {
-        sprintf(line, "This is not an authorization message, wrong type:%d , body:%s \n", authConnTemp->packet.head.type,authConnTemp->packet.buffer.buffer);
+        sprintf(line, "This is not an authorization message, wrong type \n");
         trace_file(line);    
         return -1;
     }
@@ -125,7 +127,7 @@ int authorizeConn(int fd, int retry)
 
     if(strcmp(authString, AUTH_MAGIC_NUMBER))
     {
-        sprintf(line, " Authorization declined. The magic number is wrong: %s \n", authConnTemp->packet.buffer.buffer);
+        sprintf(line, " Authorization declined. The magic number is wrong  \n");
         trace_file(line);    
         return -1;
     }

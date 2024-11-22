@@ -231,7 +231,7 @@ int ReadMsgHead(int fd, struct line_packet *packet, int *readBytes)
          if ( ret < 0  && (errno == EAGAIN || errno == EINTR))
          {
                /*The data is probably not ready yet so we will try again later*/
-            sprintf(msgLine, "****RETRY AGAIN HEADER TCP****, fd:%d, ret:%d \n", fd, ret);
+            sprintf(msgLine, "****RETRY AGAIN HEADER TCP****, fd:%d, ret:%d \n", fd, (int)ret);
             trace_file(msgLine);
 
             return -EAGAIN;
@@ -248,7 +248,7 @@ int ReadMsgHead(int fd, struct line_packet *packet, int *readBytes)
          }
      }
      
-     *readBytes += ret;
+    *readBytes += ret;
    
      head_ptr += ret;
      remain -= ret;
@@ -290,13 +290,13 @@ int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes, int skipHea
 
    if( skipHead && max_val(readBytes - head_len, 0) >= packet->head.size)
    {
-      sprintf(msgLine, "THE SIZES ARE EQ %d, %d\n", readBytes - head_len,  packet->head.size);
+      sprintf(msgLine, "THE SIZES ARE EQ %d, %d\n", (int) (readBytes - head_len),  (int)packet->head.size);
       trace_file(msgLine);
       return 1;
    }
    else
    {
-      sprintf(msgLine, "Size is %d\n", readBytes - head_len);
+      sprintf(msgLine, "Size is %d\n", (int)(readBytes - head_len));
       trace_file(msgLine);
    }
       
@@ -320,7 +320,7 @@ int readMsgFast(int fd, struct line_packet *packet, int *pReadBytes, int skipHea
          if ( ret < 0  && errno == EAGAIN || errno == EINTR)
          {
                /*The data is probably not ready yet so we will try again later*/
-            sprintf(msgLine, "****RETRY AGAIN TCP****, fd:%d, ret:%d \n", fd, ret);
+            sprintf(msgLine, "****RETRY AGAIN TCP****, fd:%d, ret:%d \n", fd, (int)ret);
             trace_file(msgLine);
 
             *pReadBytes = readBytes;
