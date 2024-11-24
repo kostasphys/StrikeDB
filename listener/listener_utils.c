@@ -134,13 +134,38 @@ void add_item_conn(struct connectThreadsInfo  *head, struct connectThreadsInfo  
 void add_item_hashLive(struct listenHash  *header, struct listenHash  *item)
 {
     struct listenHash  *prev; 
-	prev = header->livePrev; 
+    char line[255];
+/* 	prev = header->livePrev; 
 							
 	prev->liveNext = item;	 
 	item->livePrev = prev;	
 	item->liveNext = header;	
     
-	header->livePrev = item;	
+	header->livePrev = item; */	
+
+        sprintf(line, "ADD ITEM %p, HEAD %p\n", item, header);
+        trace_file(line);
+
+        prev = header->livePrev; 
+        sprintf(line, "ADD 1 %p\n", prev);
+        trace_file(line);
+
+        prev->liveNext = item;   
+        sprintf(line, "ADD 2 \n");
+        trace_file(line);
+
+        item->livePrev = prev;  
+        sprintf(line, "ADD 3 \n");
+        trace_file(line);
+
+        item->liveNext = header;
+         sprintf(line, "ADD 4 \n");
+        trace_file(line);
+    
+        header->livePrev = item;
+        sprintf(line, "ADD 5 \n");
+        trace_file(line);
+
 }
 
 
@@ -157,6 +182,32 @@ void del_item_hashLive(struct listenHash  *item)
 
     item->liveNext = NULL;
     item->livePrev = NULL;
+}
+
+void debug_hashLive()
+{
+    int count = 0;
+    char line[255];
+
+    struct listenHash *ptr = connectHead;
+
+    for(;;)
+    {
+
+        sprintf(line, "id:%d , livePrev: %p , curr %p , liveNext, %p \n", count, ptr->livePrev, ptr , ptr->liveNext );
+        trace_file(line);
+        
+        ptr = ptr->liveNext;
+
+        if(  ptr == connectHead || count == 1024 )
+            break;
+        
+
+        ++count;    
+    }
+
+    sprintf(line, "End Debug \n");
+    trace_file(line);
 }
 
 /* 
@@ -224,3 +275,5 @@ void suspend_thread(void  *blockSet)
     sigsuspend(&blockSet);
     sigaddset(&blockSet, SIGUSR2);
 }
+
+

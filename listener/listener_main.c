@@ -115,8 +115,11 @@ int main()
 
         atomic_inc_db(&hashNode->isAlive);
         
-        
+        sprintf(line, "Debug addition \n");
+        trace_file(line);
+        debug_hashLive();
         add_item_hashLive(connectHead, hashNode);
+        debug_hashLive();
         atomic_inc_db(&liveConnects);
         
 

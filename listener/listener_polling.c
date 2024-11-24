@@ -29,12 +29,14 @@ pthread_cond_t  livePollCond  = PTHREAD_COND_INITIALIZER;
 
 int liveConnects = 0;
 int connectCounter = 0;
-struct listenHash   *TailPtr, *hashPtr;
+struct listenHash   *TailPtr;
 
 
 
 void checkLiveConn()
 {   
+    struct listenHash   *hashPtr;
+
     if(atomic_read_db(&liveConnects) == 0)
         return;
 
@@ -96,6 +98,8 @@ void *pollingThreadFn(void *arg)
       find the maximum fd so that we don't make pointless itterations  */
     TailPtr = connectHead;
 
+
+
     while(1)
     {   
      //   struct line_packet   msg;
@@ -106,8 +110,10 @@ checkLive:
         checkLiveConn();
 
 
-        if(connectCounter == 0 && atomic_read_db(&liveConnects) == 0 )
+        if( connectCounter == 0 )
         {   
+            if(atomic_read_db(&liveConnects) == 0)
+                goto checkLive;
         	
             sprintf(line, "There are no live connections... we sleep \n");
             trace_file(line);
@@ -121,6 +127,8 @@ checkLive:
         
 
         FD_ZERO(&readfds);
+
+
         hashPtr = connectHead;
 /* 
         if(hashPtr->liveNext == connectHead)
@@ -152,7 +160,13 @@ checkLive:
                 if( hashPtr == TailPtr )
                 {
                     TailPtr = hashPtr->livePrev;
+
+                    sprintf(line, " IT its tail \n");
+                    trace_file(line);
+
+                    debug_hashLive();
                     del_item_hashLive(hashPtr);
+                    debug_hashLive();
                     pthread_mutex_unlock(&livePollMutex);    
 
                     
@@ -162,12 +176,19 @@ checkLive:
 
                 hashTemp = hashPtr;
                 hashPtr = hashPtr->livePrev;
+
+                sprintf(line, " Usual case\n");
+                trace_file(line);
+
+
+                debug_hashLive();
                 del_item_hashLive(hashTemp);
+                debug_hashLive();
 
                 pthread_mutex_unlock(&livePollMutex);
 
-                if(hashPtr == connectHead)
-                    break;
+                /* if(hashPtr == connectHead)
+                    break; */
                     
                 continue;
             }

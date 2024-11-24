@@ -98,8 +98,8 @@ int main(int argc, char **argv){
     bzero((char *)&sAddrClient, sizeof(sAddrClient));
     sAddrClient.sin_family = AF_INET;
     sAddrClient.sin_port   = htons(7000);
-    sAddrClient.sin_addr.s_addr = inet_addr("161.35.165.25");
-    //sAddrClient.sin_addr.s_addr = inet_addr("192.168.1.58");
+    //sAddrClient.sin_addr.s_addr = inet_addr("161.35.165.25");
+    sAddrClient.sin_addr.s_addr = inet_addr("192.168.1.58");
 
 
 

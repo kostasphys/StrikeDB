@@ -1,280 +1,139 @@
-|00134508|00134508| Listener is listening on Fd: 6 
-|00134508|00134508| Listening for new connections... 
-|00134508|00134508| Start accepting connections|00134508|00134513| There are no live connections... we sleep 
-|00134508|00134508| Conntection accepted at adress 192.168.1.58 
-
-|00134597|00134597| Its fdfdfdfd here
-|00134597|00134597| Its fdfdfdfd here
-|00134508|00134508| Start recv message ReadMsgHead 
-|00134508|00134508| TCP ReadMsgHead: message size is 8 
-|00134508|00134508| Start recv readMsgFast 
-|00134508|00134508| THE SIZES ARE EQ 60, 8
-|00134508|00134508|  Authorization Succeeded
-|00134508|00134508| New connection accepted: 7 
-|00134508|00134508| After Search hash node: 7 
-|00134508|00134508| Before mutex lock: 7 
-|00134508|00134508| After lock: 7 
-|00134508|00134508| Listening for new connections... 
-|00134508|00134508| Start accepting connections|00134508|00134513| SIGNAL HANDLER FOR USR2 has been executed 
-|00134508|00134513| Before locking
-|00134508|00134513| Alive sockets 7
-|00134508|00134513| End of connect
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134597|00134597| Its fdfdfdfd here
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134509| Thread is awake with number 0 
-|00134508|00134509| Msg, fd:7 ThreadIndex:0
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134509| Start recv readMsgFast 
-|00134508|00134509| Size is -12
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134509| Reading TCP Header 
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134509| TCP: message size is 40 
-|00134508|00134509| TCP: reading body 40 
-|00134508|00134509| Bytes read inside tcp loop : 40 
-|00134508|00134509| End recv message 
-
-|00134508|00134509| Ret in  readMsgFast 1
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134509| SUCCESS: later we will change it: Tilter here is calling you 1, pid:134597 
-|00134508|00134510| Thread is awake with number 1 
-|00134508|00134510| Msg, fd:7 ThreadIndex:1
-|00134508|00134510| Start recv readMsgFast 
-|00134508|00134510| Size is -12
-|00134508|00134510| Reading TCP Header 
-|00134508|00134510| ****RETRY AGAIN TCP****, fd:7, ret:-1 
-|00134508|00134510| Ret in  readMsgFast -11
-|00134508|00134510| Request is blocked 
-|00134597|00134597| Its fdfdfdfd here
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Polling block-waiting 1
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Polling block-waiting 1
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134510| Thread is awake with number 1 
-|00134508|00134510| Msg, fd:7 ThreadIndex:1
-|00134508|00134510| Start recv readMsgFast 
-|00134508|00134510| Size is -12
-|00134508|00134510| Reading TCP Header 
-|00134508|00134513| Polling block-waiting 1
-|00134508|00134510| TCP: message size is 40 
-|00134508|00134510| TCP: reading body 40 
-|00134508|00134510| Bytes read inside tcp loop : 40 
-|00134508|00134510| End recv message 
-
-|00134508|00134510| Ret in  readMsgFast 1
-|00134508|00134510| SUCCESS: later we will change it: Tilter here is calling you 2, pid:134597 
-|00134508|00134510| Thread is awake with number 1 
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134597|00134597| Its fdfdfdfd here
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134511| Thread is awake with number 2 
-|00134508|00134511| Msg, fd:7 ThreadIndex:2
-|00134508|00134511| Start recv readMsgFast 
-|00134508|00134511| Size is -12
-|00134508|00134511| Reading TCP Header 
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134511| TCP: message size is 40 
-|00134508|00134511| TCP: reading body 40 
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134511| Bytes read inside tcp loop : 40 
-|00134508|00134511| End recv message 
-
-|00134508|00134511| Ret in  readMsgFast 1
-|00134508|00134511| SUCCESS: later we will change it: Tilter here is calling you 3, pid:134597 
-|00134597|00134597| Its fdfdfdfd here
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134512| Thread is awake with number 3 
-|00134508|00134512| Msg, fd:7 ThreadIndex:3
-|00134508|00134512| Start recv readMsgFast 
-|00134508|00134512| Size is -12
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134512| Reading TCP Header 
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134512| TCP: message size is 40 
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134512| TCP: reading body 40 
-|00134508|00134512| Bytes read inside tcp loop : 40 
-|00134508|00134512| End recv message 
-
-|00134508|00134512| Ret in  readMsgFast 1
-|00134508|00134512| SUCCESS: later we will change it: Tilter here is calling you 4, pid:134597 
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134509| Thread is awake with number 0 
-|00134508|00134509| Msg, fd:7 ThreadIndex:0
-|00134508|00134509| Start recv readMsgFast 
-|00134508|00134509| Size is -12
-|00134508|00134509| Reading TCP Header 
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134509| Error during reading socket header. ret: 0, errno :0  
-
-|00134508|00134509| Ret in  readMsgFast 0
-|00134508|00134509| The socket with fd 7 is closed 
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| General fault: We break the connection 
-|00134508|00134510| Thread is awake with number 1 
-|00134508|00134510| Msg, fd:7 ThreadIndex:1
-|00134508|00134510| Start recv readMsgFast 
-|00134508|00134510| Size is -12
-|00134508|00134510| Reading TCP Header 
-|00134508|00134513| Waiting on select with maxFd: 7
-
-|00134508|00134510| Error during reading socket header. ret: 0, errno :11  
-
-|00134508|00134510| Ret in  readMsgFast 0
-|00134508|00134510| The socket with fd 7 is closed 
-|00134508|00134513| Time-out Occured 
-|00134508|00134513| Some Descriptors are ready for reading
-|00134508|00134513| There are no live connections... we sleep 
-|00134921|00134921| Its fdfdfdfd here
-|00134921|00134921| Its fdfdfdfd here
-|00134921|00134921| General error 
+|00012125|00012125| Listener is listening on Fd: 6 
+|00012125|00012125| Listening for new connections... 
+|00012125|00012125| Start accepting connections|00012125|00012125| Conntection accepted at adress 192.168.1.58 
+
+|00012210|00012210| Its fdfdfdfd here
+|00012210|00012210| Its fdfdfdfd here
+|00012125|00012125| Start recv message ReadMsgHead 
+|00012125|00012125| TCP ReadMsgHead: message size is 8 
+|00012125|00012125| Start recv readMsgFast 
+|00012125|00012125| THE SIZES ARE EQ 59, 8
+|00012125|00012125|  Authorization Succeeded
+|00012125|00012125| New connection accepted: 7 
+|00012125|00012125| After Search hash node: 7 
+|00012125|00012125| Before mutex lock: 7 
+|00012125|00012125| Debug addition 
+|00012125|00012125| id:0 , livePrev: 0x59099ae673a0 , curr 0x59099ae673a0 , liveNext, 0x59099ae673a0 
+|00012125|00012125| End Debug 
+|00012125|00012125| id:0 , livePrev: 0x5909996adfa0 , curr 0x59099ae673a0 , liveNext, 0x5909996adfa0 
+|00012125|00012125| id:1 , livePrev: 0x59099ae673a0 , curr 0x5909996adfa0 , liveNext, 0x59099ae673a0 
+|00012125|00012125| End Debug 
+|00012125|00012125| After lock: 7 
+|00012125|00012130| There are no live connections... we sleep 
+|00012125|00012125| Listening for new connections... 
+|00012125|00012125| Start accepting connections|00012125|00012130| SIGNAL HANDLER FOR USR2 has been executed 
+|00012125|00012130| Before locking
+|00012125|00012130| Alive sockets 7
+|00012125|00012130| End of connect
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012210|00012210| Its fdfdfdfd here
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012126| Thread is awake with number 0 
+|00012125|00012126| Msg, fd:7 ThreadIndex:0
+|00012125|00012126| Start recv readMsgFast 
+|00012125|00012126| Size is -12
+|00012125|00012126| Reading TCP Header 
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012126| TCP: message size is 39 
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012126| TCP: reading body 39 
+|00012125|00012126| Bytes read inside tcp loop : 39 
+|00012125|00012126| End recv message 
+
+|00012125|00012126| Ret in  readMsgFast 1
+|00012125|00012126| SUCCESS: later we will change it: Tilter here is calling you 1, pid:12210 
+|00012125|00012130| Some Descriptors are ready for reading
+|00012210|00012210| Its fdfdfdfd here
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012127| Thread is awake with number 1 
+|00012125|00012127| Msg, fd:7 ThreadIndex:1
+|00012125|00012127| Start recv readMsgFast 
+|00012125|00012127| Size is -12
+|00012125|00012127| Reading TCP Header 
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012127| TCP: message size is 39 
+|00012125|00012127| TCP: reading body 39 
+|00012125|00012127| Bytes read inside tcp loop : 39 
+|00012125|00012127| End recv message 
+
+|00012125|00012127| Ret in  readMsgFast 1
+|00012125|00012127| SUCCESS: later we will change it: Tilter here is calling you 2, pid:12210 
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012128| Thread is awake with number 2 
+|00012125|00012128| Msg, fd:7 ThreadIndex:2
+|00012125|00012128| Start recv readMsgFast 
+|00012125|00012128| Size is -12
+|00012125|00012128| Reading TCP Header 
+|00012125|00012128| ****RETRY AGAIN TCP****, fd:7, ret:-1 
+|00012125|00012128| Ret in  readMsgFast -11
+|00012125|00012128| Request is blocked 
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012130| Polling block-waiting 2
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012130| Polling block-waiting 2
+|00012125|00012128| Thread is awake with number 2 
+|00012125|00012128| Msg, fd:7 ThreadIndex:2
+|00012125|00012128| Start recv readMsgFast 
+|00012125|00012128| Size is -12
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012128| Reading TCP Header 
+|00012125|00012130| Polling block-waiting 2
+|00012125|00012128| Error during reading socket header. ret: 0, errno :11  
+
+|00012125|00012128| Ret in  readMsgFast 0
+|00012125|00012128| The socket with fd 7 is closed 
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Some Descriptors are ready for reading
+|00012125|00012130| General fault: We break the connection 
+|00012125|00012128| Thread is awake with number 2 
+|00012125|00012129| Thread is awake with number 3 
+|00012125|00012129| Msg, fd:7 ThreadIndex:3
+|00012125|00012129| Start recv readMsgFast 
+|00012125|00012129| Size is -12
+|00012125|00012129| Reading TCP Header 
+|00012125|00012129| Error during reading socket header. ret: -1, errno :9  
+
+|00012125|00012129| Ret in  readMsgFast 0
+|00012125|00012129| The socket with fd 7 is closed 
+|00012125|00012130|  IT its tail 
+|00012125|00012130| id:0 , livePrev: 0x5909996adfa0 , curr 0x59099ae673a0 , liveNext, 0x5909996adfa0 
+|00012125|00012130| id:1 , livePrev: 0x59099ae673a0 , curr 0x5909996adfa0 , liveNext, 0x59099ae673a0 
+|00012125|00012130| End Debug 
+|00012125|00012130| id:0 , livePrev: 0x59099ae673a0 , curr 0x59099ae673a0 , liveNext, 0x59099ae673a0 
+|00012125|00012130| End Debug 
+|00012125|00012130| Waiting on select with maxFd: 7
+
+|00012125|00012130| Time-out Occured 
+|00012125|00012130| Some Descriptors are ready for reading
