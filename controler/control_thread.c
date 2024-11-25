@@ -19,6 +19,12 @@
 int listenerFd;
 
 
+struct test_test
+{
+  int id;
+  char name[255];
+};
+
 int      install_handler(int signal, void (*processing)(int))
 {
    int       test_install_handler;
@@ -40,12 +46,23 @@ int      install_handler(int signal, void (*processing)(int))
    return 1;
 }
 
+
+/* int  test_func()
+{
+  printf("Test Works \n");
+  return 0;
+} */
+
+
+
 void fn_handle(int x)
 {
   printf("HANDLER RAN!! \n");
 }
 
 mqd_t  Rx;
+
+
 
 int main(int argc, char **argv){
     char var;
@@ -98,8 +115,8 @@ int main(int argc, char **argv){
     bzero((char *)&sAddrClient, sizeof(sAddrClient));
     sAddrClient.sin_family = AF_INET;
     sAddrClient.sin_port   = htons(7000);
-    //sAddrClient.sin_addr.s_addr = inet_addr("161.35.165.25");
-    sAddrClient.sin_addr.s_addr = inet_addr("192.168.1.58");
+    sAddrClient.sin_addr.s_addr = inet_addr("161.35.165.25");
+    //sAddrClient.sin_addr.s_addr = inet_addr("192.168.1.58");
 
 
 
@@ -149,7 +166,9 @@ int main(int argc, char **argv){
     strcpy(buffer.buffer, strz);
 
     sprintf(tempBuff, "Tilter here is calling you %d, pid:%d", cc, getpid() );
+   // trace_file(tempBuff)
     packet.packet.head.size = strlen(tempBuff);
+   // packet.packet.head.size = 542393671;
     memcpy(packet.packet.buffer.buffer, tempBuff, packet.packet.head.size);
 
 
@@ -184,13 +203,13 @@ retry:
 
     
     printf("Sleep a little bit \n");
-    usleep(6*pow(10,5));
+    usleep(5*pow(10,4));
   
     
     ++cc;
     if((cc)%(15) == 0)
     {
-      sleep(10);  
+      usleep(6*pow(10,5));
       
     }
 

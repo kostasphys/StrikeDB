@@ -2,6 +2,7 @@
 
 
 main_path=$(cd "$(dirname "${BASH_SOURCE[0]}")" ;  pwd -P )
+
 main_path=${main_path}"/"
 
 export HOME_DIR=${main_path}

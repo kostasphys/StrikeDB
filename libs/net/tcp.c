@@ -207,7 +207,8 @@ int ReadMsgHead(int fd, struct line_packet *packet, int *readBytes)
 
    head_len = sizeof(struct header_line);
 
-   
+   remain = head_len;
+
    #if ENABLE_DEBUG == 1
       sprintf(msgLine, "Start recv message ReadMsgHead \n");
       trace_file(msgLine);
