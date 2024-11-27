@@ -1,0 +1,22 @@
+---
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create dbAdmin user
+    user:
+      name: dbAdmin
+      password: "{{ upassword | password_hash('sha512') }}"
+      shell: /bin/bash
+
+  - name: Add ssh key dbAdmin
+    authorized_key:
+      user: dbAdmin
+      key: ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBP6OhGaT9rmpcSYPKzPQfIoqG//h6mspIfmBK4n5n2OWSIGtzsPAGLKSbiTYc2hUN2pGf39eXdmtpD+Xo0svq+8= kostasph@kostasph-MS-7C02
+
+  - name: Sudoer file dbAdmin
+    copy:
+      src: sudoer_dbAdmin
+      dest: /etc/sudoers.d/dbAdmin
+      owner: root
+      group: root

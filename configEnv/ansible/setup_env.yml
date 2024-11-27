@@ -1,0 +1,19 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: Update Repository Index
+    apt:
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+  - name: Install Deploy Packages
+    apt:
+      name:
+        - gcc
+        - make
+        - git
+      state: latest
+    when: ansible_distribution == "Ubuntu"
